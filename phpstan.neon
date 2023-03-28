@@ -1,0 +1,5 @@
+parameters:
+    phpVersion: 70331
+    level: 6
+    paths:
+        - SqlTark
