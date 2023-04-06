@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace SqlTark;
 
+use Closure;
 use PDO;
-use PDOStatement;
+use SqlTark\XPDOStatement;
 use SqlTark\Query\MethodType;
 use SqlTark\Utilities\Helper;
 use SqlTark\Query\QueryInterface;
@@ -24,7 +25,7 @@ class XQuery extends Query
     private $resetOnExecute = true;
 
     /**
-     * @var null|(callable(string,?array<mixed>,?PDOStatement):void) $onExecuteCallback
+     * @var null|(callable(string,?array<mixed>,?XPDOStatement):void) $onExecuteCallback
      */
     private $onExecuteCallback = null;
 
@@ -55,7 +56,7 @@ class XQuery extends Query
     }
 
     /**
-     * @param (callable(string,?array<mixed>,?PDOStatement):void) $onExecuteCallback
+     * @param (callable(string,?array<mixed>,?XPDOStatement):void) $onExecuteCallback
      * @return static Self object
      */
     public function onExecute(callable $onExecuteCallback)
@@ -114,9 +115,9 @@ class XQuery extends Query
      * @param null|Query|string $query
      * @param list<mixed> $params
      * @param list<mixed> $types
-     * @return PDOStatement Statement
+     * @return XPDOStatement Statement
      */
-    public function prepare($query = null, array $params = [], array $types = []): PDOStatement
+    public function prepare($query = null, array $params = [], array $types = []): XPDOStatement
     {
         if(func_num_args() === 0) {
             $query = $this->compiler->compileQuery($this);
@@ -155,9 +156,9 @@ class XQuery extends Query
      * @param null|Query|string $query
      * @param list<mixed> $params
      * @param list<mixed> $types
-     * @return PDOStatement Statement
+     * @return XPDOStatement Statement
      */
-    public function execute($query = null, array $params = [], array $types = []): PDOStatement
+    public function execute($query = null, array $params = [], array $types = []): XPDOStatement
     {
         if ($query instanceof QueryInterface) {
             $sql = $this->compiler->compileQuery($query);
@@ -308,12 +309,58 @@ class XQuery extends Query
     }
 
     /**
+     * @return XPDOStatement
+     */
+    public function delete(): XPDOStatement
+    {
+        return $this->asDelete()->execute();
+    }
+
+    /**
+     * @param array<string,null|scalar|DateTimeInterface|AbstractExpression|Query> $keyValues
+     * @return XPDOStatement
+     */
+    public function insert(array $keyValues): XPDOStatement
+    {
+        return $this->asInsert($keyValues)->execute();
+    }
+
+    /**
+     * @param list<string> $columns
+     * @param list<list<AbstractExpression|Query>> $values
+     * @return XPDOStatement
+     */
+    public function bulkInsert(iterable $columns, iterable $values): XPDOStatement
+    {
+        return $this->asBulkInsert($columns, $values)->execute();
+    }
+
+    /**
+     * @param (Closure(Query):void)|Query $query
+     * @param ?list<string> $columns
+     * @return XPDOStatement
+     */
+    public function insertWith(Closure|Query $query, ?iterable $columns = null): XPDOStatement
+    {
+        return $this->asInsertWith($query, $columns)->execute();
+    }
+
+    /**
+     * @param array<string,null|scalar|DateTimeInterface|AbstractExpression|Query> $keyValues
+     * @return XPDOStatement
+     */
+    public function update(array $keyValues): XPDOStatement
+    {
+        return $this->asUpdate($keyValues)->execute();
+    }
+
+    /**
      * @param string $sql
      * @param ?list<mixed> $errorInfo
-     * @param ?PDOStatement $statement
+     * @param ?XPDOStatement $statement
      * @return void
      */
-    private function triggerOnExecute(string $sql, ?array $errorInfo = null, ?PDOStatement $statement = null): void
+    private function triggerOnExecute(string $sql, ?array $errorInfo = null, ?XPDOStatement $statement = null): void
     {
         if(is_callable($this->onExecuteCallback)) {
             call_user_func_array($this->onExecuteCallback, [$sql, $errorInfo, $statement]);

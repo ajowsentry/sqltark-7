@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SqlTark\Connection;
 
 use PDO;
+use SqlTark\XPDOStatement;
 
 class Config
 {
@@ -44,6 +45,7 @@ class Config
     protected $attributes = [
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_STATEMENT_CLASS => [XPDOStatement::class],
     ];
 
     /**
