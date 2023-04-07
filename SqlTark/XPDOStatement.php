@@ -18,7 +18,7 @@ final class XPDOStatement extends PDOStatement
     public function fetchClass(string $className): ?object
     {
         $row = $this->fetch(PDO::FETCH_ASSOC);
-        return false === $row ? null : new ($className)($row);
+        return false === $row ? null : new $className($row);
     }
 
     /**

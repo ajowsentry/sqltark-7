@@ -76,11 +76,12 @@ abstract class AbstractConnection
         }
 
         try {
-            $dsn = $this->createDSN();
-            $this->pdo = new PDO($dsn, $this->config->getUsername(), $this->config->getPassword());
-            foreach ($this->config->getAttributes() as $key => $value) {
-                $this->getPDO()->setAttribute($key, $value);
-            }
+            $this->pdo = new PDO(
+                $this->createDSN(),
+                $this->config->getUsername(),
+                $this->config->getPassword(),
+                $this->config->getAttributes()
+            );
 
             $this->onConnected();
             return $this->pdo;

@@ -340,7 +340,7 @@ class XQuery extends Query
      * @param ?list<string> $columns
      * @return XPDOStatement
      */
-    public function insertWith(Closure|Query $query, ?iterable $columns = null): XPDOStatement
+    public function insertWith($query, ?iterable $columns = null): XPDOStatement
     {
         return $this->asInsertWith($query, $columns)->execute();
     }
