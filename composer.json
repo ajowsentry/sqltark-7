@@ -1,6 +1,6 @@
 {
     "name": "ajowsentry/sqltark-7",
-    "version": "v0.9.11",
+    "version": "v0.9.12",
     "description": "SQL Query Builder for PHP",
     "type": "library",
     "keywords": ["database", "query", "query builder"],
@@ -23,7 +23,7 @@
         }
     },
     "require": {
-        "php": ">=7.3.31"
+        "php": ">=7.3"
     },
     "scripts": {
         "phpunit": "@php vendor/bin/phpunit Tests",
