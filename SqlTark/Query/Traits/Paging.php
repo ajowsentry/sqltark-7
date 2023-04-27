@@ -11,8 +11,8 @@ use SqlTark\Component\ComponentType;
 trait Paging
 {
     /**
-     * @param scalar $limit
-     * @return static Self object
+     * @param int|float|string $limit
+     * @return $this Self object
      */
     public function limit($limit)
     {
@@ -23,8 +23,8 @@ trait Paging
     }
 
     /**
-     * @param scalar $offset
-     * @return static Self object
+     * @param int|float|string $offset
+     * @return $this Self object
      */
     public function offset($offset)
     {
@@ -35,8 +35,8 @@ trait Paging
     }
 
     /**
-     * @param scalar $take
-     * @return static Self object
+     * @param int|float|string $take
+     * @return $this Self object
      */
     public function take($take)
     {
@@ -44,8 +44,8 @@ trait Paging
     }
 
     /**
-     * @param scalar $skip
-     * @return static Self object
+     * @param int|float|string $skip
+     * @return $this Self object
      */
     public function skip($skip)
     {
@@ -55,7 +55,7 @@ trait Paging
     /**
      * @param int $page
      * @param int $perPage
-     * @return static Self object
+     * @return $this Self object
      */
     public function forPage(int $page, int $perPage = 20)
     {

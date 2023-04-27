@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SqlTark\Expressions;
 
+use SqlTark\Utilities\Helper;
+
 final class Raw extends AbstractExpression
 {
     /**
@@ -38,7 +40,9 @@ final class Raw extends AbstractExpression
      */
     public function getBindings(): iterable
     {
-        return $this->bindings;
+        return array_map(function($item) {
+            return Helper::resolveExpression($item);
+        }, $this->bindings);
     }
 
     /**

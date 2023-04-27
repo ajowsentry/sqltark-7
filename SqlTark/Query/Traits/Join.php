@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SqlTark\Query\Traits;
 
-use Closure;
 use DateTimeInterface;
 use SqlTark\Query;
 use SqlTark\Utilities\Helper;
@@ -17,9 +16,9 @@ use SqlTark\Expressions\AbstractExpression;
 trait Join
 {
     /**
-     * @param (Closure(QueryJoin):void)|QueryJoin $join
+     * @param (\Closure(QueryJoin):void)|QueryJoin $join
      * @param ?int $type JoinType enum
-     * @return static
+     * @return $this Self object
      */
     public function joinWith($join, ?int $type = null)
     {
@@ -35,12 +34,12 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
      * @param int $type JoinType enum
-     * @return static
+     * @return $this Self object
      */
     public function join($table, $left, string $operator, $right, int $type = JoinType::Join)
     {
@@ -56,11 +55,11 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
-     * @return static
+     * @return $this Self object
      */
     public function innerJoin($table, $left, string $operator, $right)
     {
@@ -68,11 +67,11 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
-     * @return static
+     * @return $this Self object
      */
     public function leftJoin($table, $left, string $operator, $right)
     {
@@ -80,11 +79,11 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
-     * @return static
+     * @return $this Self object
      */
     public function rightJoin($table, $left, string $operator, $right)
     {
@@ -92,11 +91,11 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
-     * @return static
+     * @return $this Self object
      */
     public function outerJoin($table, $left, string $operator, $right)
     {
@@ -104,11 +103,11 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
-     * @return static
+     * @return $this Self object
      */
     public function leftOuterJoin($table, $left, string $operator, $right)
     {
@@ -116,11 +115,11 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
-     * @return static
+     * @return $this Self object
      */
     public function rightOuterJoin($table, $left, string $operator, $right)
     {
@@ -128,11 +127,11 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
+     * @param string|(\Closure(Query):void)|Query $table
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $left
      * @param string $operator
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $right
-     * @return static
+     * @return $this Self object
      */
     public function fullOuterJoin($table, $left, string $operator, $right)
     {
@@ -140,8 +139,8 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
-     * @return static
+     * @param string|(\Closure(Query):void)|Query $table
+     * @return $this Self object
      */
     public function crossJoin($table)
     {
@@ -156,8 +155,8 @@ trait Join
     }
 
     /**
-     * @param string|(Closure(Query):void)|Query $table
-     * @return static
+     * @param string|(\Closure(Query):void)|Query $table
+     * @return $this Self object
      */
     public function naturalJoin($table)
     {

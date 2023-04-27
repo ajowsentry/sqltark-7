@@ -17,7 +17,7 @@ trait Aggregate
     /**
      * @param string $type Aggregate type
      * @param scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return static Self object
+     * @return $this Self object
      */
     public function asAggregate(string $type, $column)
     {
@@ -34,7 +34,7 @@ trait Aggregate
 
     /**
      * @param scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return static Self object
+     * @return $this Self object
      */
     public function asCount($column)
     {
@@ -43,7 +43,7 @@ trait Aggregate
 
     /**
      * @param scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return static Self object
+     * @return $this Self object
      */
     public function asAvg($column)
     {
@@ -52,7 +52,7 @@ trait Aggregate
 
     /**
      * @param scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return static Self object
+     * @return $this Self object
      */
     public function asAverage($column)
     {
@@ -61,7 +61,7 @@ trait Aggregate
 
     /**
      * @param scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return static Self object
+     * @return $this Self object
      */
     public function asSum($column)
     {
@@ -70,7 +70,7 @@ trait Aggregate
 
     /**
      * @param scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return static Self object
+     * @return $this Self object
      */
     public function asMax($column)
     {
@@ -79,7 +79,7 @@ trait Aggregate
 
     /**
      * @param scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return static Self object
+     * @return $this Self object
      */
     public function asMin($column)
     {

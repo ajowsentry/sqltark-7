@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SqlTark\Query\Traits;
 
-use Closure;
 use SqlTark\Query;
 use DateTimeInterface;
 use InvalidArgumentException;
@@ -19,9 +18,9 @@ trait From
     use BaseFrom;
 
     /**
-     * @param Query|(Closure(Query):void) $table
+     * @param Query|(\Closure(Query):void) $table
      * @param string $alias
-     * @return static Self object
+     * @return $this Self object
      */
     public function fromQuery($table, ?string $alias = null)
     {
@@ -42,7 +41,7 @@ trait From
     /**
      * @param string $expression
      * @param null|scalar|DateTimeInterface|AbstractExpression ...$bindings
-     * @return static Self object
+     * @return $this Self object
      */
     public function fromRaw(string $expression, ...$bindings)
     {

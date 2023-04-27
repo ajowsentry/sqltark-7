@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SqlTark\Query;
 
-use Closure;
 use SqlTark\Query;
 use SqlTark\Component\AbstractComponent;
 
@@ -19,7 +18,7 @@ interface QueryInterface
     /**
      * Set query parent
      * @param AbstractQuery $value Parent
-     * @return static Self object
+     * @return $this Self object
      */
     public function setParent(AbstractQuery $value);
 
@@ -40,7 +39,7 @@ interface QueryInterface
      * 
      * @param int $componentType Component type from ```ComponentType``` enum class
      * @param AbstractComponent $component Component object
-     * @return static Self object
+     * @return $this Self object
      */
     public function addComponent(int $componentType, AbstractComponent $component);
 
@@ -50,7 +49,7 @@ interface QueryInterface
      * 
      * @param int $componentType Component type from ```ComponentType``` enum class
      * @param AbstractComponent $component Component object
-     * @return static Self object
+     * @return $this Self object
      */
     public function addOrReplaceComponent(int $componentType, AbstractComponent $component);
 
@@ -58,7 +57,7 @@ interface QueryInterface
      * Remove all component with specified ```componentType``` if exists
      * 
      * @param ?int $componentType Component type from ```ComponentType``` enum class
-     * @return static Self object
+     * @return $this Self object
      */
     public function clearComponents(?int $componentType = null);
 
@@ -96,9 +95,9 @@ interface QueryInterface
      * Execute query when condition is fulfilled
      * 
      * @param bool $condition Condition
-     * @param (Closure(QueryInterface):void) $whenTrue Query when true
-     * @param ?(Closure(QueryInterface):void) $whenFalse Query when false
-     * @return static Self object
+     * @param (\Closure(QueryInterface):void) $whenTrue Query when true
+     * @param ?(\Closure(QueryInterface):void) $whenFalse Query when false
+     * @return $this Self object
      */
-    public function when(bool $condition, Closure $whenTrue, ?Closure $whenFalse);
+    public function when(bool $condition, \Closure $whenTrue, ?\Closure $whenFalse);
 }

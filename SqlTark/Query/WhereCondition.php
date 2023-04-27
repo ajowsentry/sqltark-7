@@ -6,5 +6,5 @@ namespace SqlTark\Query;
 
 class WhereCondition extends AbstractQuery implements ConditionInterface
 {
-    use Traits\Condition;
+    use Traits\Condition, Traits\ExtendedWhere;
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SqlTark\Query\Traits;
 
-use Closure;
 use SqlTark\Query;
 use SqlTark\Utilities\Helper;
 use SqlTark\Component\CombineType;
@@ -14,10 +13,10 @@ use SqlTark\Component\ComponentType;
 trait Combine
 {
     /**
-     * @param (Closure(Query):void)|Query $query
+     * @param (\Closure(Query):void)|Query $query
      * @param int $operation CombineType enum
      * @param bool $all Combine all
-     * @return static Self object
+     * @return $this Self object
      */
     public function combine($query, int $operation = CombineType::Union, bool $all = false)
     {
@@ -30,8 +29,8 @@ trait Combine
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
-     * @return static Self object
+     * @param (\Closure(Query):void)|Query $query
+     * @return $this Self object
      */
     public function union($query)
     {
@@ -39,8 +38,8 @@ trait Combine
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
-     * @return static Self object
+     * @param (\Closure(Query):void)|Query $query
+     * @return $this Self object
      */
     public function unionAll($query)
     {
@@ -48,8 +47,8 @@ trait Combine
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
-     * @return static Self object
+     * @param (\Closure(Query):void)|Query $query
+     * @return $this Self object
      */
     public function except($query)
     {
@@ -57,8 +56,8 @@ trait Combine
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
-     * @return static Self object
+     * @param (\Closure(Query):void)|Query $query
+     * @return $this Self object
      */
     public function exceptAll($query)
     {
@@ -66,8 +65,8 @@ trait Combine
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
-     * @return static Self object
+     * @param (\Closure(Query):void)|Query $query
+     * @return $this Self object
      */
     public function intersect($query)
     {
@@ -75,8 +74,8 @@ trait Combine
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
-     * @return static Self object
+     * @param (\Closure(Query):void)|Query $query
+     * @return $this Self object
      */
     public function intersectAll($query)
     {

@@ -260,6 +260,17 @@ trait SelectQueryCompiler
     }
 
     /**
+     * @param list<AbstractFrom> $tables
+     * @return string
+     */
+    protected function compileTables($tables): string
+    {
+        return join(', ', array_map(function($component) {
+            return $this->compileFrom($component);
+        }, $tables));
+    }
+
+    /**
      * @param list<AbstractJoin> $joins
      * @return string
      */

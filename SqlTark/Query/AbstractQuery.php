@@ -4,19 +4,27 @@ declare(strict_types=1);
 
 namespace SqlTark\Query;
 
-use Closure;
 use SqlTark\Query;
 use SqlTark\Utilities\Helper;
 use SqlTark\Component\ComponentType;
 use SqlTark\Component\AbstractComponent;
 
-abstract class AbstractQuery implements QueryInterface
+/**
+ * @property $this $not
+ * @property $this $and
+ * @property $this $andNot
+ * @property $this $or
+ * @property $this $orNot
+ */
+abstract class AbstractQuery implements QueryInterface, ConditionInterface
 {
+    use Traits\Condition;
+
     /**
      * @var ?AbstractQuery $parent
      */
     protected $parent = null;
-    
+
     /**
      * @var ?array<int,AbstractComponent[]> $components
      */
@@ -50,7 +58,7 @@ abstract class AbstractQuery implements QueryInterface
 
     /**
      * @param AbstractQuery $value
-     * @return static
+     * @return $this Self object
      */
     public function setParent(AbstractQuery $value)
     {
@@ -72,14 +80,14 @@ abstract class AbstractQuery implements QueryInterface
 
     /**
      * @param int $value MethodType enum
-     * @return static
+     * @return $this Self object
      */
     public function setMethod(int $value)
     {
         $this->method = $value;
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -191,7 +199,7 @@ abstract class AbstractQuery implements QueryInterface
     /**
      * {@inheritdoc}
      */
-    public function when(bool $condition, Closure $whenTrue, ?Closure $whenFalse = null)
+    public function when(bool $condition, \Closure $whenTrue, ?\Closure $whenFalse = null)
     {
         if($condition) {
             $whenTrue($this);
@@ -202,6 +210,34 @@ abstract class AbstractQuery implements QueryInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __get(string $property)
+    {
+        $name = $property;
+        if(substr($name, 0, 2) == 'or') {
+            $this->or();
+            $name = lcfirst(substr($name, 2));
+        }
+        elseif(substr($name, 0, 3) == 'and') {
+            $this->and();
+            $name = lcfirst(substr($name, 3));
+        }
+
+        if(substr($name, 0, 3) == 'not') {
+            $this->not();
+            $name = '';
+        }
+
+        if($name == '') {
+            return $this;
+        }
+
+        trigger_error('Undefined property: ' . static::class . '::$' . $property, E_USER_NOTICE);
+        return null;
     }
 
     public final function __construct() { }

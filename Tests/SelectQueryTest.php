@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use SqlTark\Query;
+use SqlTark\Expressions;
 use PHPUnit\Framework\TestCase;
 use SqlTark\Compiler\MySqlCompiler;
 use SqlTark\Component\ComponentType;
-use SqlTark\Expressions;
-use SqlTark\Query;
 
 final class SelectQueryTest extends TestCase
 {
@@ -29,6 +29,10 @@ final class SelectQueryTest extends TestCase
 
         $output = "SELECT `t`.`column1`, 'asdf', TRUE FROM `table` AS `t`";
         $query->select(Expressions::literal(true));
+        $this->assertEquals($output, $query->compile());
+
+        $output = "SELECT `t`.`column1`, 'asdf', TRUE, t.column2 FROM `table` AS `t`";
+        $query->select(Expressions::raw('t.column2'));
         $this->assertEquals($output, $query->compile());
 
         $output .= " JOIN `table2` AS `tt` ON `t`.`id` = `tt`.`id`";
@@ -140,7 +144,7 @@ final class SelectQueryTest extends TestCase
         $this->assertEquals($output, $query->compile());
 
         $output .= " HAVING 1 = 1";
-        $query->having()->equals(Expressions::literal(1), Expressions::literal(1));
+        $query->withHaving()->equals(Expressions::literal(1), Expressions::literal(1));
         $this->assertEquals($output, $query->compile());
 
         $output .= " LIMIT 100, 18446744073709551615";
@@ -159,6 +163,95 @@ final class SelectQueryTest extends TestCase
         $output .= " LIMIT 222";
         $query->limit(222);
         $this->assertEquals($output, $query->compile());
+    }
+
+    public function testSelectQuery_select()
+    {
+        $query = new Query;
+        $query->setCompiler(new MySqlCompiler);
+        
+        $query->select('column1');
+        $expected = 'SELECT `column1`';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select column');
+        $query->clearComponents();
+
+        $query->select('column1 AS c1');
+        $expected = 'SELECT `column1` AS `c1`';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select column with alias');
+        $query->clearComponents();
+
+        $query->select('column1 AS c1', 'column2');
+        $expected = 'SELECT `column1` AS `c1`, `column2`';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select multiple column');
+        $query->clearComponents();
+
+        $query->select(1, 1.2, true, Expressions::literal('string'));
+        $expected = 'SELECT 1, 1.2, TRUE, \'string\'';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select literals');
+        $query->clearComponents();
+
+        $query->select(
+            Expressions::literal(1)->as('int'),
+            Expressions::literal(1.2)->as('float'),
+            Expressions::literal(true)->as('bool'),
+            Expressions::literal('string')->as('str')
+        );
+        $expected = 'SELECT 1 AS `int`, 1.2 AS `float`, TRUE AS `bool`, \'string\' AS `str`';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select literals with alias');
+        $query->clearComponents();
+
+        $query->select(
+            Expressions::column('1'),
+            Expressions::column('TRUE'),
+            Expressions::column('string')
+        );
+        $expected = 'SELECT `1`, `TRUE`, `string`';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select columns using Expressions::column');
+        $query->clearComponents();
+
+        $query->select(
+            Expressions::column('1 AS int'),
+            Expressions::column('true AS bool'),
+            Expressions::column('string AS str')
+        );
+        $expected = 'SELECT `1` AS `int`, `true` AS `bool`, `string` AS `str`';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select columns using Expressions::column and alias');
+        $query->clearComponents();
+
+        $query->select(Expressions::raw('1, 1.2, true, null'));
+        $expected = 'SELECT 1, 1.2, true, null';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select raw');
+        $query->clearComponents();
+
+        $query->select(Expressions::raw('? AS int, ? AS float, ? AS bool, ? AS string', [
+            1, 1.2, true, 'string'
+        ]));
+        $expected = 'SELECT 1 AS int, 1.2 AS float, TRUE AS bool, \'string\' AS string';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select raw with placeholder');
+        $query->clearComponents();
+
+        $query->selectRaw('1, 1.2, true, null');
+        $expected = 'SELECT 1, 1.2, true, null';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select raw with `selectRaw` method');
+        $query->clearComponents();
+        
+        $query->selectRaw('? AS int, ? AS float, ? AS bool, ? AS string',
+            1, 1.2, true, 'string'
+        );
+        $expected = 'SELECT 1 AS int, 1.2 AS float, TRUE AS bool, \'string\' AS string';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select raw with `selectRaw` method and placeholder');
+        $query->clearComponents();
     }
 
     public function testSelectQuery_withQuery()

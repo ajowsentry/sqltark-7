@@ -21,8 +21,8 @@ trait DeleteQueryCompiler
      */
     public function compileDeleteQuery(Query $query): string
     {
-        /** @var ?AbstractFrom $from */
-        $from = $query->getOneComponent(ComponentType::From);
+        /** @var list<AbstractFrom> $tables */
+        $tables = $query->getComponents(ComponentType::From);
 
         /** @var list<AbstractJoin> $joins */
         $joins = $query->getComponents(ComponentType::Join);
@@ -39,11 +39,16 @@ trait DeleteQueryCompiler
         /** @var ?OffsetClause $offset */
         $offset = $query->getOneComponent(ComponentType::Offset);
 
-        if(empty($from)) {
+        if(empty($tables)) {
             throw new InvalidArgumentException("Table not specified!");
         }
 
-        $result = 'DELETE FROM ' . $this->compileFrom($from);
+        $result = 'DELETE ';
+        if(count($tables) > 1) {
+            $result .= $this->compileTables($tables);
+        }
+
+        $result .= ' FROM ' . $this->compileFrom($tables[0]);
 
         $resolvedJoin = $this->compileJoin($joins);
         if($resolvedJoin) {

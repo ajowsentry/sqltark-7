@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SqlTark\Query\Traits;
 
-use Closure;
+use SqlTark\Component\FromClause;
 use SqlTark\Query;
 use DateTimeInterface;
 use SqlTark\Query\MethodType;
@@ -18,17 +18,24 @@ use SqlTark\Expressions\AbstractExpression;
 trait Manipulate
 {
     /**
-     * @return static
+     * @return $this Self object
      */
-    public function asDelete()
+    public function asDelete(string ...$tables)
     {
         $this->method = MethodType::Delete;
+
+        foreach($tables as $table) {
+            $component = new FromClause;
+            $component->setTable($table);
+            $this->addComponent(ComponentType::From, $component);
+        }
+
         return $this;
     }
 
     /**
      * @param array<string,null|scalar|DateTimeInterface|AbstractExpression|Query> $keyValues
-     * @return static
+     * @return $this Self object
      */
     public function asInsert(array $keyValues)
     {
@@ -44,7 +51,7 @@ trait Manipulate
     /**
      * @param list<string> $columns
      * @param list<list<AbstractExpression|Query>> $values
-     * @return static
+     * @return $this Self object
      */
     public function asBulkInsert(iterable $columns, iterable $values)
     {
@@ -58,9 +65,9 @@ trait Manipulate
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
+     * @param (\Closure(Query):void)|Query $query
      * @param ?list<string> $columns
-     * @return static
+     * @return $this Self object
      */
     public function asInsertWith($query, ?iterable $columns = null)
     {
@@ -75,7 +82,7 @@ trait Manipulate
 
     /**
      * @param array<string,null|scalar|DateTimeInterface|AbstractExpression|Query> $keyValues
-     * @return static
+     * @return $this Self object
      */
     public function asUpdate(array $keyValues)
     {

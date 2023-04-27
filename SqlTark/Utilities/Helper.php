@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SqlTark\Utilities;
 
-use Closure;
 use SqlTark\Query;
 use DateTimeInterface;
 use SqlTark\Query\Join;
@@ -62,13 +61,13 @@ final class Helper
     }
 
     /**
-     * @param (Closure(Query):void)|Query $value
+     * @param (\Closure(Query):void)|Query $value
      * @param AbstractQuery $query
      * @return Query
      */
     public static function resolveQuery($value, AbstractQuery $query): Query
     {
-        if($value instanceof Closure) {
+        if($value instanceof \Closure) {
             $child = $query->newChild();
             $value($child);
             return $child;
@@ -78,13 +77,13 @@ final class Helper
     }
 
     /**
-     * @param (Closure(Join):void)|Join $value
+     * @param (\Closure(Join):void)|Join $value
      * @param AbstractQuery $query
      * @return Join
      */
     public static function resolveJoin($value, AbstractQuery $query): Join
     {
-        if($value instanceof Closure) {
+        if($value instanceof \Closure) {
             $child = new Join;
 
             $child->setParent($query);
@@ -97,13 +96,13 @@ final class Helper
     }
 
     /**
-     * @param (Closure(ConditionInterface):void)|ConditionInterface $value
+     * @param (\Closure(ConditionInterface):void)|ConditionInterface $value
      * @param AbstractQuery $query
      * @return ConditionInterface
      */
     public static function resolveCondition($value, AbstractQuery $query): ConditionInterface
     {
-        if($value instanceof Closure) {
+        if($value instanceof \Closure) {
             $condition = $query->getConditionComponent() == ComponentType::Having
                 ? new HavingCondition
                 : new WhereCondition;
@@ -120,10 +119,10 @@ final class Helper
     /**
      * @param ?string $subject
      * @param string $match
-     * @param Closure $callback
+     * @param \Closure $callback
      * @return string
      */
-    public static function replaceAll(?string $subject, string $match, Closure $callback): string
+    public static function replaceAll(?string $subject, string $match, \Closure $callback): string
     {
         if (empty($subject) || strpos($subject, $match) === false) {
             return (string) $subject;

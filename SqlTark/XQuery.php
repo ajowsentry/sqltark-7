@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace SqlTark;
 
-use Closure;
 use PDO;
+use PDOException;
+use SqlTark\Query;
+use DateTimeInterface;
 use SqlTark\XPDOStatement;
 use SqlTark\Query\MethodType;
 use SqlTark\Utilities\Helper;
-use SqlTark\Query\QueryInterface;
 use SqlTark\Connection\AbstractConnection;
+use SqlTark\Expressions\AbstractExpression;
 
 class XQuery extends Query
 {
@@ -57,7 +59,7 @@ class XQuery extends Query
 
     /**
      * @param (callable(string,?array<mixed>,?XPDOStatement):void) $onExecuteCallback
-     * @return static Self object
+     * @return $this Self object
      */
     public function onExecute(callable $onExecuteCallback)
     {
@@ -67,7 +69,7 @@ class XQuery extends Query
 
     /**
      * @param bool $value
-     * @return static Self object
+     * @return $this Self object
      */
     public function resetOnExecute(bool $value = true)
     {
@@ -76,7 +78,7 @@ class XQuery extends Query
     }
 
     /**
-     * @return static Self object
+     * @return $this Self object
      */
     public function reset()
     {
@@ -138,11 +140,17 @@ class XQuery extends Query
             $pdo = $this->connection->getPDO();
 
             $statement = $pdo->prepare($sql);
+            if(false === $statement) {
+                [$sqlState, $errorCode, $errorMessage] = $pdo->errorInfo();
+                throw new PDOException("SQLSTATE[{$sqlState}]: (Code {$errorCode}) {$errorMessage}");
+            }
+
             foreach($params as $index => $value) {
                 $type = $this->determineType($index, $value, $types);
                 $statement->bindValue(1 + $index, $value, $type);
             }
 
+            /** @var XPDOStatement $statement */
             return $statement;
         }
         finally {
@@ -160,7 +168,7 @@ class XQuery extends Query
      */
     public function execute($query = null, array $params = [], array $types = []): XPDOStatement
     {
-        if ($query instanceof QueryInterface) {
+        if ($query instanceof Query) {
             $sql = $this->compiler->compileQuery($query);
         }
         elseif (is_string($query)) {
@@ -176,7 +184,10 @@ class XQuery extends Query
 
         try {
             $statement = $this->prepare($sql, $params, $types);
-            $statement->execute();
+            if(false === $statement->execute()) {
+                [$sqlState, $errorCode, $errorMessage] = $this->getConnection()->getPDO()->errorInfo();
+                throw new PDOException("SQLSTATE[{$sqlState}]: (Code {$errorCode}) {$errorMessage}");
+            }
 
             return $statement;
         }
@@ -311,9 +322,9 @@ class XQuery extends Query
     /**
      * @return XPDOStatement
      */
-    public function delete(): XPDOStatement
+    public function delete(string ...$tables): XPDOStatement
     {
-        return $this->asDelete()->execute();
+        return $this->asDelete(...$tables)->execute();
     }
 
     /**
@@ -336,7 +347,7 @@ class XQuery extends Query
     }
 
     /**
-     * @param (Closure(Query):void)|Query $query
+     * @param (\Closure(Query):void)|Query $query
      * @param ?list<string> $columns
      * @return XPDOStatement
      */

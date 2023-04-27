@@ -11,12 +11,25 @@ use SqlTark\Component\ComponentType;
 use SqlTark\Query\ConditionInterface;
 use SqlTark\Compiler\AbstractCompiler;
 
+/**
+ * @property $this $where
+ * @property $this $whereNot
+ * @property $this $orWhere
+ * @property $this $orWhereNot
+ * @property $this $andWhere
+ * @property $this $andWhereNot
+ * @property $this $having
+ * @property $this $havingNot
+ * @property $this $orHaving
+ * @property $this $orHavingNot
+ * @property $this $andHaving
+ * @property $this $andHavingNot
+ */
 class Query extends AbstractQuery implements ConditionInterface
 {
     use Traits\Aggregate,
         Traits\BaseFrom,
         Traits\Combine,
-        Traits\Condition,
         Traits\Cte,
         Traits\From,
         Traits\GroupBy,
@@ -24,7 +37,8 @@ class Query extends AbstractQuery implements ConditionInterface
         Traits\Manipulate,
         Traits\Order,
         Traits\Paging,
-        Traits\Select;
+        Traits\Select,
+        Traits\ExtendedWhere;
 
     /**
      * @var ?AbstractCompiler $compiler
@@ -32,18 +46,18 @@ class Query extends AbstractQuery implements ConditionInterface
     protected $compiler = null;
 
     /**
-     * @return static Self object
+     * @return $this Self object
      */
-    public function where()
+    public function withWhere()
     {
         $this->conditionComponent = ComponentType::Where;
         return $this;
     }
 
     /**
-     * @return static Self object
+     * @return $this Self object
      */
-    public function having()
+    public function withHaving()
     {
         $this->conditionComponent = ComponentType::Having;
         return $this;
@@ -84,5 +98,42 @@ class Query extends AbstractQuery implements ConditionInterface
     public function __toString(): string
     {
         return $this->compile();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function __get(string $property)
+    {
+        $name = $property;
+        if(substr($name, 0, 2) == 'or') {
+            $this->or();
+            $name = lcfirst(substr($name, 2));
+        }
+        elseif(substr($name, 0, 3) == 'and') {
+            $this->and();
+            $name = lcfirst(substr($name, 3));
+        }
+
+        if(substr($name, 0, 5) == 'where') {
+            $this->withWhere();
+            $name = lcfirst(substr($name, 5));
+        }
+        elseif(substr($name, 0, 6) == 'having') {
+            $this->withHaving();
+            $name = lcfirst(substr($name, 6));
+        }
+
+        if(substr($name, 0, 3) == 'not') {
+            $this->not();
+            $name = lcfirst(substr($name, 3));
+        }
+
+        if($name == '') {
+            return $this;
+        }
+
+        trigger_error('Undefined property: ' . static::class . '::$' . $property, E_USER_NOTICE);
+        return null;
     }
 }

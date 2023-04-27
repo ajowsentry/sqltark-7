@@ -52,7 +52,7 @@ final class Variable extends AbstractExpression
 
     /**
      * @param string $value
-     * @return static
+     * @return $this Self object
      */
     public function as(string $value)
     {

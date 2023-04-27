@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SqlTark\Query\Traits;
 
-use Closure;
 use SqlTark\Query;
 use SqlTark\Utilities\Helper;
 use InvalidArgumentException;
@@ -14,9 +13,9 @@ use SqlTark\Component\ComponentType;
 trait Cte
 {
     /**
-     * @param (Closure(Query):void)|Query $query
+     * @param (\Closure(Query):void)|Query $query
      * @param ?string $alias
-     * @return static Self object
+     * @return $this Self object
      */
     public function with($query, ?string $alias = null)
     {
