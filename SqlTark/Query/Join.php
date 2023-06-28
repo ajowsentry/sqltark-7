@@ -25,7 +25,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
 
     /**
      * @param int $type JoinType enum
-     * @return $this Self object
+     * @return static Self object
      */
     public function asType(int $type)
     {
@@ -34,7 +34,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asInnerJoin()
     {
@@ -42,7 +42,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asLeftJoin()
     {
@@ -50,7 +50,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asRightJoin()
     {
@@ -58,7 +58,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asOuterJoin()
     {
@@ -66,7 +66,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asNaturalJoin()
     {
@@ -74,7 +74,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asLeftOuterJoin()
     {
@@ -82,7 +82,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asRightOuterJoin()
     {
@@ -90,7 +90,7 @@ class Join extends AbstractQuery implements JoinConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asFullOuterJoin()
     {

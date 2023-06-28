@@ -18,7 +18,7 @@ interface QueryInterface
     /**
      * Set query parent
      * @param AbstractQuery $value Parent
-     * @return $this Self object
+     * @return static Self object
      */
     public function setParent(AbstractQuery $value);
 
@@ -39,7 +39,7 @@ interface QueryInterface
      * 
      * @param int $componentType Component type from ```ComponentType``` enum class
      * @param AbstractComponent $component Component object
-     * @return $this Self object
+     * @return static Self object
      */
     public function addComponent(int $componentType, AbstractComponent $component);
 
@@ -49,7 +49,7 @@ interface QueryInterface
      * 
      * @param int $componentType Component type from ```ComponentType``` enum class
      * @param AbstractComponent $component Component object
-     * @return $this Self object
+     * @return static Self object
      */
     public function addOrReplaceComponent(int $componentType, AbstractComponent $component);
 
@@ -57,7 +57,7 @@ interface QueryInterface
      * Remove all component with specified ```componentType``` if exists
      * 
      * @param ?int $componentType Component type from ```ComponentType``` enum class
-     * @return $this Self object
+     * @return static Self object
      */
     public function clearComponents(?int $componentType = null);
 
@@ -97,7 +97,7 @@ interface QueryInterface
      * @param bool $condition Condition
      * @param (\Closure(QueryInterface):void) $whenTrue Query when true
      * @param ?(\Closure(QueryInterface):void) $whenFalse Query when false
-     * @return $this Self object
+     * @return static Self object
      */
     public function when(bool $condition, \Closure $whenTrue, ?\Closure $whenFalse);
 }

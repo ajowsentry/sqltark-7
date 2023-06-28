@@ -33,7 +33,7 @@ trait BaseFrom
 
     /**
      * @param ?string $alias
-     * @return $this Self object
+     * @return static Self object
      */
     public function alias(?string $alias)
     {
@@ -44,7 +44,7 @@ trait BaseFrom
     /**
      * @param string $table
      * @param ?string $alias
-     * @return $this Self object
+     * @return static Self object
      */
     public function from(string $table, ?string $alias = null)
     {

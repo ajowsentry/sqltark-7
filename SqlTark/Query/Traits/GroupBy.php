@@ -16,7 +16,7 @@ trait GroupBy
 {
     /**
      * @param null|scalar|DateTimeInterface|Query ...$columns
-     * @return $this Self object
+     * @return static Self object
      */
     public function groupBy(...$columns)
     {
@@ -35,7 +35,7 @@ trait GroupBy
     /**
      * @param string $expression
      * @param null|scalar|DateTimeInterface|AbstractExpression ...$bindings
-     * @return $this Self object
+     * @return static Self object
      */
     public function groupByRaw(string $expression, ...$bindings)
     {

@@ -20,7 +20,7 @@ trait From
     /**
      * @param Query|(\Closure(Query):void) $table
      * @param string $alias
-     * @return $this Self object
+     * @return static Self object
      */
     public function fromQuery($table, ?string $alias = null)
     {
@@ -41,7 +41,7 @@ trait From
     /**
      * @param string $expression
      * @param null|scalar|DateTimeInterface|AbstractExpression ...$bindings
-     * @return $this Self object
+     * @return static Self object
      */
     public function fromRaw(string $expression, ...$bindings)
     {

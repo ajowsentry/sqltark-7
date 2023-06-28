@@ -21,7 +21,7 @@ abstract class AbstractExpression
 
     /**
      * @param ?string $value
-     * @return $this Self object
+     * @return static Self object
      */
     public function wrap(?string $value)
     {

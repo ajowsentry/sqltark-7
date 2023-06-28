@@ -54,7 +54,7 @@ final class Literal extends AbstractExpression
 
     /**
      * @param string $value
-     * @return $this Self object
+     * @return static Self object
      */
     public function as(string $value)
     {

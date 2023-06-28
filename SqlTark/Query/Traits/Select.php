@@ -29,7 +29,7 @@ trait Select
 
     /**
      * @param bool $value
-     * @return $this Self object
+     * @return static Self object
      */
     public function distinct(bool $value = true)
     {
@@ -39,7 +39,7 @@ trait Select
 
     /**
      * @param null|scalar|AbstractExpression|Query ...$columns
-     * @return $this Self object
+     * @return static Self object
      */
     public function select(...$columns)
     {
@@ -58,7 +58,7 @@ trait Select
     /**
      * @param string $expression
      * @param null|scalar|DateTimeInterface|AbstractExpression ...$bindings
-     * @return $this Self object
+     * @return static Self object
      */
     public function selectRaw(string $expression, ...$bindings)
     {

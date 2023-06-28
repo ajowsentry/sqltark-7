@@ -28,7 +28,7 @@ trait BaseCondition
     protected $notFlag = false;
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function and()
     {
@@ -37,7 +37,7 @@ trait BaseCondition
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function or()
     {
@@ -47,7 +47,7 @@ trait BaseCondition
 
     /**
      * @param bool $value
-     * @return $this Self object
+     * @return static Self object
      */
     public function not(bool $value = true)
     {

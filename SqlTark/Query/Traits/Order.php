@@ -18,7 +18,7 @@ trait Order
     /**
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $column
      * @param bool $isAscending
-     * @return $this Self object
+     * @return static Self object
      */
     public function orderBy($column, bool $isAscending = true)
     {
@@ -33,7 +33,7 @@ trait Order
 
     /**
      * @param null|scalar|DateTimeInterface|AbstractExpression|Query $column
-     * @return $this Self object
+     * @return static Self object
      */
     public function orderByDesc($column)
     {
@@ -41,7 +41,7 @@ trait Order
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function orderByRandom()
     {
@@ -51,7 +51,7 @@ trait Order
     /**
      * @param string $expression
      * @param null|scalar|DateTimeInterface|AbstractExpression ...$bindings
-     * @return $this Self object
+     * @return static Self object
      */
     public function orderRaw(string $expression, ...$bindings)
     {

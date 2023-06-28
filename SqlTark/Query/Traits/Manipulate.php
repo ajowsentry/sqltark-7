@@ -18,7 +18,7 @@ use SqlTark\Expressions\AbstractExpression;
 trait Manipulate
 {
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function asDelete(string ...$tables)
     {
@@ -35,7 +35,7 @@ trait Manipulate
 
     /**
      * @param array<string,null|scalar|DateTimeInterface|AbstractExpression|Query> $keyValues
-     * @return $this Self object
+     * @return static Self object
      */
     public function asInsert(array $keyValues)
     {
@@ -51,7 +51,7 @@ trait Manipulate
     /**
      * @param list<string> $columns
      * @param list<list<AbstractExpression|Query>> $values
-     * @return $this Self object
+     * @return static Self object
      */
     public function asBulkInsert(iterable $columns, iterable $values)
     {
@@ -67,7 +67,7 @@ trait Manipulate
     /**
      * @param (\Closure(Query):void)|Query $query
      * @param ?list<string> $columns
-     * @return $this Self object
+     * @return static Self object
      */
     public function asInsertWith($query, ?iterable $columns = null)
     {
@@ -82,7 +82,7 @@ trait Manipulate
 
     /**
      * @param array<string,null|scalar|DateTimeInterface|AbstractExpression|Query> $keyValues
-     * @return $this Self object
+     * @return static Self object
      */
     public function asUpdate(array $keyValues)
     {

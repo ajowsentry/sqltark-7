@@ -16,7 +16,7 @@ use SqlTark\Component\ComponentType;
 trait ExtendedWhere
 {
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function where()
     {
@@ -34,7 +34,7 @@ trait ExtendedWhere
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function orWhere()
     {

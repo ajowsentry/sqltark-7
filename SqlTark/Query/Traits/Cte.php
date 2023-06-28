@@ -15,7 +15,7 @@ trait Cte
     /**
      * @param (\Closure(Query):void)|Query $query
      * @param ?string $alias
-     * @return $this Self object
+     * @return static Self object
      */
     public function with($query, ?string $alias = null)
     {

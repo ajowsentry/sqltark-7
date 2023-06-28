@@ -16,7 +16,7 @@ trait Combine
      * @param (\Closure(Query):void)|Query $query
      * @param int $operation CombineType enum
      * @param bool $all Combine all
-     * @return $this Self object
+     * @return static Self object
      */
     public function combine($query, int $operation = CombineType::Union, bool $all = false)
     {
@@ -30,7 +30,7 @@ trait Combine
 
     /**
      * @param (\Closure(Query):void)|Query $query
-     * @return $this Self object
+     * @return static Self object
      */
     public function union($query)
     {
@@ -39,7 +39,7 @@ trait Combine
 
     /**
      * @param (\Closure(Query):void)|Query $query
-     * @return $this Self object
+     * @return static Self object
      */
     public function unionAll($query)
     {
@@ -48,7 +48,7 @@ trait Combine
 
     /**
      * @param (\Closure(Query):void)|Query $query
-     * @return $this Self object
+     * @return static Self object
      */
     public function except($query)
     {
@@ -57,7 +57,7 @@ trait Combine
 
     /**
      * @param (\Closure(Query):void)|Query $query
-     * @return $this Self object
+     * @return static Self object
      */
     public function exceptAll($query)
     {
@@ -66,7 +66,7 @@ trait Combine
 
     /**
      * @param (\Closure(Query):void)|Query $query
-     * @return $this Self object
+     * @return static Self object
      */
     public function intersect($query)
     {
@@ -75,7 +75,7 @@ trait Combine
 
     /**
      * @param (\Closure(Query):void)|Query $query
-     * @return $this Self object
+     * @return static Self object
      */
     public function intersectAll($query)
     {

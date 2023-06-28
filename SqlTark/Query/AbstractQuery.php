@@ -10,11 +10,11 @@ use SqlTark\Component\ComponentType;
 use SqlTark\Component\AbstractComponent;
 
 /**
- * @property $this $not
- * @property $this $and
- * @property $this $andNot
- * @property $this $or
- * @property $this $orNot
+ * @property static $not
+ * @property static $and
+ * @property static $andNot
+ * @property static $or
+ * @property static $orNot
  */
 abstract class AbstractQuery implements QueryInterface, ConditionInterface
 {
@@ -58,7 +58,7 @@ abstract class AbstractQuery implements QueryInterface, ConditionInterface
 
     /**
      * @param AbstractQuery $value
-     * @return $this Self object
+     * @return static Self object
      */
     public function setParent(AbstractQuery $value)
     {
@@ -80,7 +80,7 @@ abstract class AbstractQuery implements QueryInterface, ConditionInterface
 
     /**
      * @param int $value MethodType enum
-     * @return $this Self object
+     * @return static Self object
      */
     public function setMethod(int $value)
     {

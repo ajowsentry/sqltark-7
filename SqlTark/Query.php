@@ -12,18 +12,18 @@ use SqlTark\Query\ConditionInterface;
 use SqlTark\Compiler\AbstractCompiler;
 
 /**
- * @property $this $where
- * @property $this $whereNot
- * @property $this $orWhere
- * @property $this $orWhereNot
- * @property $this $andWhere
- * @property $this $andWhereNot
- * @property $this $having
- * @property $this $havingNot
- * @property $this $orHaving
- * @property $this $orHavingNot
- * @property $this $andHaving
- * @property $this $andHavingNot
+ * @property static $where
+ * @property static $whereNot
+ * @property static $orWhere
+ * @property static $orWhereNot
+ * @property static $andWhere
+ * @property static $andWhereNot
+ * @property static $having
+ * @property static $havingNot
+ * @property static $orHaving
+ * @property static $orHavingNot
+ * @property static $andHaving
+ * @property static $andHavingNot
  */
 class Query extends AbstractQuery implements ConditionInterface
 {
@@ -46,7 +46,7 @@ class Query extends AbstractQuery implements ConditionInterface
     protected $compiler = null;
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function withWhere()
     {
@@ -55,7 +55,7 @@ class Query extends AbstractQuery implements ConditionInterface
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function withHaving()
     {

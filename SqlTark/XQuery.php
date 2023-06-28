@@ -59,7 +59,7 @@ class XQuery extends Query
 
     /**
      * @param (callable(string,?array<mixed>,?XPDOStatement):void) $onExecuteCallback
-     * @return $this Self object
+     * @return static Self object
      */
     public function onExecute(callable $onExecuteCallback)
     {
@@ -69,7 +69,7 @@ class XQuery extends Query
 
     /**
      * @param bool $value
-     * @return $this Self object
+     * @return static Self object
      */
     public function resetOnExecute(bool $value = true)
     {
@@ -78,7 +78,7 @@ class XQuery extends Query
     }
 
     /**
-     * @return $this Self object
+     * @return static Self object
      */
     public function reset()
     {

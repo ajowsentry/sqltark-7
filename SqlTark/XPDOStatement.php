@@ -17,7 +17,7 @@ final class XPDOStatement extends PDOStatement
      */
     public function fetchClass(string $className): ?object
     {
-        $row = $this->fetch(PDO::FETCH_ASSOC);
+        $row = parent::fetch(PDO::FETCH_ASSOC);
         return false === $row ? null : new $className($row);
     }
 
@@ -38,8 +38,16 @@ final class XPDOStatement extends PDOStatement
      */
     public function fetchClassIterate(string $className): Generator
     {
-        while(false !== ($row = $this->fetch(PDO::FETCH_ASSOC))) {
+        while(false !== ($row = parent::fetch(PDO::FETCH_ASSOC))) {
             yield new $className($row);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function fetch($mode = PDO::FETCH_BOTH, $cursorOrientation = PDO::FETCH_ORI_NEXT, $cursorOffset = 0)
+    {
+        return parent::fetch($mode, $cursorOrientation, $cursorOffset) ?: null;
     }
 }
