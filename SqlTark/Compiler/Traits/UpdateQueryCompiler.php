@@ -18,6 +18,8 @@ use SqlTark\Expressions\AbstractExpression;
 
 trait UpdateQueryCompiler
 {
+    use ExpressionCompiler;
+
     /**
      * {@inheritdoc}
      */
