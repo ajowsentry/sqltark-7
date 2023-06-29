@@ -7,35 +7,42 @@ namespace SqlTark\Query\Traits;
 use SqlTark\Component\LimitClause;
 use SqlTark\Component\OffsetClause;
 use SqlTark\Component\ComponentType;
+use SqlTark\Expressions\Variable;
 
 trait Paging
 {
     /**
-     * @param int|float|string $limit
+     * @param int|float|string|Variable $limit
      * @return static Self object
      */
     public function limit($limit)
     {
+        if(!($limit instanceof Variable))
+            $limit = intval($limit);
+
         $component = new LimitClause;
-        $component->setLimit(intval($limit));
+        $component->setLimit($limit);
 
         return $this->addOrReplaceComponent(ComponentType::Limit, $component);
     }
 
     /**
-     * @param int|float|string $offset
+     * @param int|float|string|Variable $offset
      * @return static Self object
      */
     public function offset($offset)
     {
+        if(!($offset instanceof Variable))
+            $offset = intval($offset);
+
         $component = new OffsetClause;
-        $component->setOffset(intval($offset));
+        $component->setOffset($offset);
 
         return $this->addOrReplaceComponent(ComponentType::Offset, $component);
     }
 
     /**
-     * @param int|float|string $take
+     * @param int|float|string|Variable $take
      * @return static Self object
      */
     public function take($take)
@@ -44,7 +51,7 @@ trait Paging
     }
 
     /**
-     * @param int|float|string $skip
+     * @param int|float|string|Variable $skip
      * @return static Self object
      */
     public function skip($skip)
