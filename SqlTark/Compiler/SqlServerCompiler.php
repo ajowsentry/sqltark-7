@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SqlTark\Compiler;
 
 use DateTimeInterface;
+use SqlTark\Utilities\Helper;
 
 class SqlServerCompiler extends AbstractCompiler
 {
@@ -41,6 +42,6 @@ class SqlServerCompiler extends AbstractCompiler
             return "'" . $value->format('Y-m-d H:i:s') . "'";
         }
 
-        // Helper::throwInvalidArgumentException("Could not resolve value from '%s' type.", $value);
+        Helper::throwInvalidArgumentException("Could not resolve value from '%s' type.", $value);
     }
 }
