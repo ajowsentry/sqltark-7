@@ -44,9 +44,10 @@ final class XPDOStatement extends PDOStatement
     }
 
     /**
-     * {@inheritdoc}
+     * Same as XPDOStatement::fetch, except it returns null on error instead of false
+     * @return mixed
      */
-    public function fetch($mode = PDO::FETCH_BOTH, $cursorOrientation = PDO::FETCH_ORI_NEXT, $cursorOffset = 0)
+    public function fetchOne($mode = PDO::FETCH_BOTH, $cursorOrientation = PDO::FETCH_ORI_NEXT, $cursorOffset = 0)
     {
         return parent::fetch($mode, $cursorOrientation, $cursorOffset) ?: null;
     }
