@@ -92,12 +92,12 @@ class XQuery extends Query
     }
 
     /**
-     * @param int $index
+     * @param string|int $index
      * @param mixed $value
      * @param list<mixed> $types
      * @return int
      */
-    private function determineType(int $index, $value, array $types): int
+    private function determineType($index, $value, array $types): int
     {
         if(array_key_exists($index, $types)) {
             return $types[$index];
@@ -145,9 +145,19 @@ class XQuery extends Query
                 throw new PDOException("SQLSTATE[{$sqlState}]: (Code {$errorCode}) {$errorMessage}");
             }
 
-            foreach($params as $index => $value) {
-                $type = $this->determineType($index, $value, $types);
-                $statement->bindValue(1 + $index, $value, $type);
+            if(!empty($params)) {
+                if(array_key_exists(0, $params)) {
+                    foreach($params as $index => $value) {
+                        $type = $this->determineType($index, $value, $types);
+                        $statement->bindValue(1 + $index, $value, $type);
+                    }
+                }
+                else {
+                    foreach($params as $index => $value) {
+                        $type = $this->determineType($index, $value, $types);
+                        $statement->bindValue($index, $value, $type);
+                    }
+                }
             }
 
             /** @var XPDOStatement $statement */
