@@ -77,9 +77,6 @@ trait BaseCondition
         return $return;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function compare($left, string $operator, $right)
     {
         $component = new CompareClause;
@@ -92,9 +89,6 @@ trait BaseCondition
         return $this->addComponent($this->conditionComponent, $component);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function in($column, $list)
     {
         $resolvedValues = is_array($list)
@@ -110,9 +104,6 @@ trait BaseCondition
         return $this->addComponent($this->conditionComponent, $component);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isNull($column)
     {
         $component = new NullCondition;
@@ -123,9 +114,6 @@ trait BaseCondition
         return $this->addComponent($this->conditionComponent, $component);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function between($column, $low, $high)
     {
         $component = new BetweenCondition;
@@ -138,9 +126,6 @@ trait BaseCondition
         return $this->addComponent($this->conditionComponent, $component);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function group($condition)
     {
         $component = new GroupCondition;
@@ -151,9 +136,6 @@ trait BaseCondition
         return $this->addComponent($this->conditionComponent, $component);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function exists($query)
     {
         $component = new ExistsCondition;
@@ -164,9 +146,6 @@ trait BaseCondition
         return $this->addComponent($this->conditionComponent, $component);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function like($column, string $value, bool $caseSensitive = false, ?string $escapeCharacter = null, int $likeType = LikeType::Like)
     {
         $component = new LikeCondition;
@@ -181,9 +160,6 @@ trait BaseCondition
         return $this->addComponent($this->conditionComponent, $component);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function conditionRaw(string $expression, ...$bindings)
     {
         $component = new RawCondition;
