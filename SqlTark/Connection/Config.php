@@ -81,7 +81,8 @@ class Config
         $this->extras = $config;
 
         if (!empty($config['attributes'])) {
-            $this->attributes = array_merge($this->attributes, $config['attributes']);
+            foreach($config['attributes'] as $key => $val)
+                $this->attributes[$key] = $val;
         }
     }
 
