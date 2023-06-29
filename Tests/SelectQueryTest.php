@@ -35,6 +35,14 @@ final class SelectQueryTest extends TestCase
         $query->select(Expressions::raw('t.column2'));
         $this->assertEquals($output, $query->compile());
 
+        $output = "SELECT `t`.`column1`, 'asdf', TRUE, t.column2, :var FROM `table` AS `t`";
+        $query->select(Expressions::variable('var'));
+        $this->assertEquals($output, $query->compile());
+
+        $output = "SELECT `t`.`column1`, 'asdf', TRUE, t.column2, :var, ? FROM `table` AS `t`";
+        $query->select(Expressions::variable());
+        $this->assertEquals($output, $query->compile());
+
         $output .= " JOIN `table2` AS `tt` ON `t`.`id` = `tt`.`id`";
         $query->join('table2 AS tt', 't.id', '=', 'tt.id');
         $this->assertEquals($output, $query->compile());
@@ -99,8 +107,32 @@ final class SelectQueryTest extends TestCase
         $query->isNull('f');
         $this->assertEquals($output, $query->compile());
 
-        $output .= " AND `g` BETWEEN 1 AND 100";
-        $query->between('g', 1, 100);
+        $output .= " AND `g` = 'h'";
+        $query->where('g', 'h');
+        $this->assertEquals($output, $query->compile());
+
+        $output .= " AND `h` != 'h'";
+        $query->where('h', '!=', 'h');
+        $this->assertEquals($output, $query->compile());
+
+        $output .= " AND `i` BETWEEN 1 AND 100";
+        $query->between('i', 1, 100);
+        $this->assertEquals($output, $query->compile());
+
+        $output .= " AND `i` NOT BETWEEN 1 AND 100";
+        $query->not->between('i', 1, 100);
+        $this->assertEquals($output, $query->compile());
+
+        $output .= " OR `i` > 100";
+        $query->or->where('i', '>', 100);
+        $this->assertEquals($output, $query->compile());
+
+        $output .= " AND `i` IS NOT NULL";
+        $query->not->isNull('i');
+        $this->assertEquals($output, $query->compile());
+
+        $output .= " OR NOT (`i` > 100)";
+        $query->or->not->where('i', '>', 100);
         $this->assertEquals($output, $query->compile());
 
         $output .= " AND (`c` = 'd' AND `d` = 'c')";
@@ -153,15 +185,21 @@ final class SelectQueryTest extends TestCase
 
         $output = substr($output, 0, -32);
         $output .= " LIMIT 100, 123";
-        $query->limit(123);
+        $query->limit('123');
         $this->assertEquals($output, $query->compile());
 
-        $query->clearComponents(ComponentType::Limit);
-        $query->clearComponents(ComponentType::Offset);
+        // $query->clearComponents(ComponentType::Limit);
+        // $query->clearComponents(ComponentType::Offset);
+        $query->limit(0)->offset(0);
 
         $output = substr($output, 0, -15);
         $output .= " LIMIT 222";
         $query->limit(222);
+        $this->assertEquals($output, $query->compile());
+
+        $output = substr($output, 0, -10);
+        $output .= " LIMIT :var";
+        $query->limit(Expressions::variable('var'));
         $this->assertEquals($output, $query->compile());
     }
 
@@ -203,6 +241,15 @@ final class SelectQueryTest extends TestCase
         $expected = 'SELECT 1 AS `int`, 1.2 AS `float`, TRUE AS `bool`, \'string\' AS `str`';
         $actual = $query->compile();
         $this->assertEquals($expected, $actual, 'Test select literals with alias');
+        $query->clearComponents();
+
+        $query->select(
+            Expressions::variable()->as('v1'),
+            Expressions::variable('var')->as('v2')
+        );
+        $expected = 'SELECT ? AS `v1`, :var AS `v2`';
+        $actual = $query->compile();
+        $this->assertEquals($expected, $actual, 'Test select variables with alias');
         $query->clearComponents();
 
         $query->select(
