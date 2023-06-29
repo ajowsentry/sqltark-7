@@ -6,27 +6,19 @@ namespace SqlTark\Compiler\Traits;
 
 use SqlTark\Query;
 use InvalidArgumentException;
-use SqlTark\Utilities\Helper;
-use SqlTark\Component\RawFrom;
-use SqlTark\Component\FromClause;
 use SqlTark\Component\InsertClause;
 use SqlTark\Component\ComponentType;
 use SqlTark\Component\InsertQueryClause;
 
 trait InsertQueryCompiler
 {
+    use ExpressionCompiler;
+
     /**
      * {@inheritdoc}
      */
     public function compileInsertQuery(Query $query): string
     {
-        $from = $query->getOneComponent(ComponentType::From);
-        if(empty($from)) {
-            throw new InvalidArgumentException(
-                "Insert query does not have table reference"
-            );
-        }
-
         $values = $query->getOneComponent(ComponentType::Insert);
         if(empty($values)) {
             throw new InvalidArgumentException(
@@ -34,37 +26,31 @@ trait InsertQueryCompiler
             );
         }
 
-        $resolvedTable = null;
-        if($from instanceof FromClause) {
-            $table = $from->getTable();
-            $resolvedTable = $this->wrapIdentifier($table);
-        }
-
-        elseif($from instanceof RawFrom) {
-            $resolvedTable = $this->compileRaw(
-                $from->getExpression(),
-                $from->getBindings(),
-            );
-        }
-
-        else {
-            $class = Helper::getType($from);
+        $fromComponent = $query->getOneComponent(ComponentType::From);
+        $resolvedTable  = $this->compileFrom($fromComponent);
+        if(empty($from)) {
             throw new InvalidArgumentException(
-                "Could not resolve '{$class}' for insert query"
+                "Insert query does not have table reference"
             );
         }
 
         $result = "INSERT INTO {$resolvedTable} ";
 
         if($values instanceof InsertClause) {
-            $result .= '(' . join(', ', array_map(function($value) { return $this->wrapIdentifier($value); }, $values->getColumns())) . ') VALUES ';
+            $result .= '(' . join(', ', array_map(
+                function($value) { return $this->wrapIdentifier($value); },
+                $values->getColumns()))
+            . ') VALUES ';
 
             $valuesPart = '';
             foreach ($values->getValues() as $row) {
                 if ($valuesPart)
                     $valuesPart .= ', ';
 
-                $valuesPart .= '(' . join(', ', array_map(function($value) { return $this->compileExpression($value, false); }, $row)) . ')';
+                $valuesPart .= '(' . join(', ', array_map(
+                    function($value) { return $this->compileExpression($value, false); },
+                    $row))
+                . ')';
             }
             $result .= $valuesPart;
         }
@@ -72,7 +58,10 @@ trait InsertQueryCompiler
         elseif($values instanceof InsertQueryClause) {
             $columns = $values->getColumns();
             if(!empty($columns)) {
-                $result .= '(' . join(', ', array_map(function($column) {return $this->wrapIdentifier($column); }, $columns)) . ')';
+                $result .= '(' . join(', ', array_map(
+                    function($column) { return $this->wrapIdentifier($column); },
+                    $columns))
+                . ')';
             }
 
             $query = $values->getQuery();
