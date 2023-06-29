@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SqlTark\Compiler\SqlServer;
 
+use SqlTark\Compiler\Traits\ExpressionCompiler;
 use SqlTark\Query;
 use SqlTark\Utilities\Helper;
 use SqlTark\Component\RawFrom;
@@ -38,6 +39,8 @@ use SqlTark\Expressions;
 
 trait SelectQueryCompiler
 {
+    use ExpressionCompiler;
+
     /**
      * {@inheritdoc}
      */
@@ -190,10 +193,7 @@ trait SelectQueryCompiler
             }
 
             elseif ($column instanceof RawColumn) {
-                $resolvedColumn = $this->compileRaw(
-                    $column->getExpression(),
-                    $column->getBindings()
-                );
+                $resolvedColumn = $this->compileRawExpression($column);
             }
 
             if (! is_null($resolvedColumn)) {
@@ -203,71 +203,6 @@ trait SelectQueryCompiler
         }
 
         return $result;
-    }
-
-    /**
-     * @param ?AbstractFrom $table
-     * @return string
-     */
-    protected function compileFrom(?AbstractFrom $table): string
-    {
-        $result = '';
-
-        if ($table instanceof FromClause) {
-            $expression = $table->getTable();
-            if (is_string($expression)) {
-                $result = $this->compileTable($expression);
-            } elseif ($expression instanceof Query) {
-                $result = '(' . $this->compileQuery($expression) . ') AS ' . $this->wrapIdentifier($table->getAlias());
-            }
-        }
-        elseif ($table instanceof RawFrom) {
-            $result = $this->compileRaw(
-                $table->getExpression(),
-                $table->getBindings()
-            );
-        }
-
-        if (empty($result) && $this->fromTableRequired) {
-            $result = $this->dummyTable;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param string $name
-     * @return string
-     */
-    protected function compileTable(string $name): string
-    {
-        $result = trim($name);
-        if (empty($result)) {
-            return '';
-        }
-
-        $aliasSplit = array_map(
-            function($item) { return $this->wrapIdentifier($item); },
-            Helper::extractAlias($result)
-        );
-
-        $result = $aliasSplit[0];
-        if (isset($aliasSplit[1])) {
-            $result .= ' AS ' . $aliasSplit[1];
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param list<AbstractFrom> $tables
-     * @return string
-     */
-    protected function compileTables($tables): string
-    {
-        return join(', ', array_map(function($component) {
-            return $this->compileFrom($component);
-        }, $tables));
     }
 
     /**
@@ -426,10 +361,7 @@ trait SelectQueryCompiler
                 }
             }
             elseif ($condition instanceof RawCondition) {
-                $resolvedCondition = $this->compileRaw(
-                    $condition->getExpression(),
-                    $condition->getBindings()
-                );
+                $resolvedCondition = $this->compileRawExpression($condition);
             }
 
             if ($resolvedCondition) {
@@ -500,11 +432,7 @@ trait SelectQueryCompiler
                 $resolvedColumn .= $isAscending ? ' ASC' : ' DESC';
             }
             elseif ($column instanceof RawOrder) {
-
-                $resolvedColumn = $this->compileRaw(
-                    $column->getExpression(),
-                    $column->getBindings()
-                );
+                $resolvedColumn = $this->compileRawExpression($column);
             }
 
             elseif ($column instanceof RandomOrder) {

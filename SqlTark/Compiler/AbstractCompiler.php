@@ -6,6 +6,9 @@ namespace SqlTark\Compiler;
 
 use SqlTark\Query;
 use DateTimeInterface;
+use SqlTark\Component\AbstractFrom;
+use SqlTark\Component\FromClause;
+use SqlTark\Component\RawFrom;
 use SqlTark\Expressions\Raw;
 use SqlTark\Query\MethodType;
 use SqlTark\Utilities\Helper;
@@ -81,6 +84,9 @@ abstract class AbstractCompiler
 
             return '(' . $this->compileQuery($expression) . ')' . $alias;
         }
+
+        if(is_scalar($expression) || is_null($expression))
+            return $this->quote($expression);
 
         Helper::throwInvalidArgumentException(
             "Could not resolve expression from '%s' type.",
