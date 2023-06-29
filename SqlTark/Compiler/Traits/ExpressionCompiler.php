@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace SqlTark\Compiler\Traits;
 
+use SqlTark\Component\AbstractFrom;
+use SqlTark\Component\FromClause;
+use SqlTark\Component\RawFrom;
 use SqlTark\Utilities\Helper;
 use SqlTark\Expressions\Column;
+use SqlTark\Expressions\IRawExpression;
 use SqlTark\Expressions\Literal;
+use SqlTark\Expressions\Raw;
 use SqlTark\Expressions\Variable;
+use SqlTark\Query;
 
 trait ExpressionCompiler
 {
@@ -35,7 +41,10 @@ trait ExpressionCompiler
         if (empty($result) || $result == '*')
             return $this->wrapFunction('*', $column->getWrap());
 
-        $aliasSplit = array_map(function($item) { return $this->wrapIdentifier($item); }, Helper::extractAlias($result));
+        $aliasSplit = array_map(
+            function($item) { return $this->wrapIdentifier($item); },
+            Helper::extractAlias($result)
+        );
 
         $columnExression = $this->wrapFunction($aliasSplit[0], $column->getWrap());
         if ($withAlias && isset($aliasSplit[1]))
@@ -56,6 +65,11 @@ trait ExpressionCompiler
                 return $this->compileExpression($bindings[$index], false);
             }
         );
+    }
+
+    protected function compileRawExpression(IRawExpression $raw): string
+    {
+        return $this->compileRaw($raw->getExpression(), $raw->getBindings());
     }
 
     /**
@@ -108,5 +122,67 @@ trait ExpressionCompiler
 
             return $acc;
         }, []));
+    }
+
+    /**
+     * @param ?AbstractFrom $table
+     * @return string
+     */
+    protected function compileFrom(?AbstractFrom $table): string
+    {
+        $result = '';
+
+        if ($table instanceof FromClause) {
+            $expression = $table->getTable();
+            if (is_string($expression)) {
+                $result = $this->compileTable($expression);
+            } elseif ($expression instanceof Query) {
+                $result = '(' . $this->compileQuery($expression) . ') AS ' . $this->wrapIdentifier($table->getAlias());
+            }
+        }
+        elseif ($table instanceof RawFrom) {
+            $result = $this->compileRawExpression($table);
+        }
+
+        if (empty($result) && $this->fromTableRequired) {
+            $result = $this->dummyTable;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    protected function compileTable(string $name): string
+    {
+        $result = trim($name);
+        if (empty($result)) {
+            return '';
+        }
+
+        $aliasSplit = array_map(
+            function($item) { return $this->wrapIdentifier($item); },
+            Helper::extractAlias($result)
+        );
+
+        $result = $aliasSplit[0];
+        if (isset($aliasSplit[1])) {
+            $result .= ' AS ' . $aliasSplit[1];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param list<AbstractFrom> $tables
+     * @return string
+     */
+    protected function compileTables($tables): string
+    {
+        return join(', ', array_map(function($component) {
+            return $this->compileFrom($component);
+        }, $tables));
     }
 }
