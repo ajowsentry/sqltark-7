@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace SqlTark\Component;
 
 use SqlTark\Utilities\Helper;
+use SqlTark\Expressions\IRawExpression;
 use SqlTark\Expressions\AbstractExpression;
 
-class RawOrder extends AbstractOrder
+class RawOrder extends AbstractOrder implements IRawExpression
 {
     /**
      * @var string $expression
@@ -19,35 +20,25 @@ class RawOrder extends AbstractOrder
      */
     protected $bindings;
 
-    /**
-     * @return string
-     */
+    /** {@inheritDoc} */
     public function getExpression(): string
     {
         return $this->expression;
     }
 
-    /**
-     * @param string $value
-     * @return void
-     */
+    /** {@inheritDoc} */
     public function setExpression(string $value): void
     {
         $this->expression = $value;
     }
 
-    /**
-     * @return list<AbstractExpression>
-     */
+    /** {@inheritDoc} */
     public function getBindings(): iterable
     {
         return $this->bindings;
     }
 
-    /**
-     * @param list<AbstractExpression> $value
-     * @return void
-     */
+    /** {@inheritDoc} */
     public function setBindings(iterable $value): void
     {
         $this->bindings = $value;

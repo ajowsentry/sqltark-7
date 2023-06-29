@@ -6,7 +6,7 @@ namespace SqlTark\Expressions;
 
 use SqlTark\Utilities\Helper;
 
-final class Raw extends AbstractExpression
+final class Raw extends AbstractExpression implements IRawExpression
 {
     /**
      * @var string $expression
@@ -18,26 +18,19 @@ final class Raw extends AbstractExpression
      */
     protected $bindings;
 
-    /**
-     * @return string
-     */
+    /** {@inheritDoc} */
     public function getExpression(): string
     {
         return $this->expression;
     }
 
-    /**
-     * @param string $value
-     * @return void
-     */
+    /** {@inheritDoc} */
     public function setExpression(string $value): void
     {
         $this->expression = $value;
     }
 
-    /**
-     * @return list<AbstractExpression>
-     */
+    /** {@inheritDoc} */
     public function getBindings(): iterable
     {
         return array_map(function($item) {
@@ -45,10 +38,7 @@ final class Raw extends AbstractExpression
         }, $this->bindings);
     }
 
-    /**
-     * @param list<AbstractExpression> $value
-     * @return void
-     */
+    /** {@inheritDoc} */
     public function setBindings(iterable $value): void
     {
         $this->bindings = $value;
