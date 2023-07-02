@@ -1,6 +1,6 @@
 {
     "name": "ajowsentry/sqltark-7",
-    "version": "v0.9.15",
+    "version": "v0.9.16",
     "description": "SQL Query Builder for PHP",
     "type": "library",
     "keywords": ["database", "query", "query builder"],

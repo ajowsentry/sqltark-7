@@ -28,7 +28,7 @@ trait InsertQueryCompiler
 
         $fromComponent = $query->getOneComponent(ComponentType::From);
         $resolvedTable  = $this->compileFrom($fromComponent);
-        if(empty($from)) {
+        if(empty($resolvedTable)) {
             throw new InvalidArgumentException(
                 "Insert query does not have table reference"
             );
