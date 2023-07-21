@@ -8,6 +8,7 @@ use SqlTark\XQuery;
 use RuntimeException;
 use SqlTark\Compiler\MySqlCompiler;
 use SqlTark\Compiler\AbstractCompiler;
+use SqlTark\Compiler\PostgresCompiler;
 use SqlTark\Compiler\SqlServerCompiler;
 use SqlTark\Connection\MySqlConnection;
 use SqlTark\Connection\AbstractConnection;
@@ -139,6 +140,10 @@ class DbManager
             case 'dblib':
             case SqlServerCompiler::class:
             return new SqlServerCompiler;
+
+            case 'pgsql':
+            case PostgresCompiler::class:
+            return new PostgresCompiler;
         }
 
         if(class_exists($driver) && is_subclass_of($driver, AbstractCompiler::class)) {
