@@ -49,8 +49,8 @@ trait DeleteQueryCompiler
         if(count($tables) > 1) {
             $result .= $this->compileTables($tables);
         }
-
-        $result .= ' FROM ' . $this->compileFrom($tables[0]);
+        
+        $result .= 'FROM ' . $this->compileFrom($tables[0]);
 
         $resolvedJoin = $this->compileJoin($joins);
         if($resolvedJoin) {
