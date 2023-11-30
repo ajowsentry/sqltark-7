@@ -12,11 +12,15 @@ use SqlTark\Expressions\Variable;
 trait Paging
 {
     /**
-     * @param int|float|string|Variable $limit
+     * @param null|int|float|string|Variable $limit
      * @return static Self object
      */
     public function limit($limit)
     {
+        if(is_null($limit)) {
+            return $this->clearComponents(ComponentType::Limit);
+        }
+
         if(!($limit instanceof Variable))
             $limit = intval($limit);
 
@@ -27,11 +31,15 @@ trait Paging
     }
 
     /**
-     * @param int|float|string|Variable $offset
+     * @param null|int|float|string|Variable $offset
      * @return static Self object
      */
     public function offset($offset)
     {
+        if(is_null($offset)) {
+            return $this->clearComponents(ComponentType::Offset);
+        }
+
         if(!($offset instanceof Variable))
             $offset = intval($offset);
 
@@ -42,7 +50,7 @@ trait Paging
     }
 
     /**
-     * @param int|float|string|Variable $take
+     * @param null|int|float|string|Variable $take
      * @return static Self object
      */
     public function take($take)
@@ -51,7 +59,7 @@ trait Paging
     }
 
     /**
-     * @param int|float|string|Variable $skip
+     * @param null|int|float|string|Variable $skip
      * @return static Self object
      */
     public function skip($skip)

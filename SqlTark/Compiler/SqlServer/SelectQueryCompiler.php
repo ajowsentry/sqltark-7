@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace SqlTark\Compiler\SqlServer;
 
-use SqlTark\Compiler\Traits\ExpressionCompiler;
 use SqlTark\Query;
-use SqlTark\Utilities\Helper;
-use SqlTark\Component\RawFrom;
+use SqlTark\Expressions;
 use SqlTark\Component\JoinType;
 use SqlTark\Component\LikeType;
 use SqlTark\Component\RawOrder;
 use SqlTark\Component\RawColumn;
 use SqlTark\Component\FromClause;
 use SqlTark\Component\JoinClause;
+use SqlTark\Component\CombineType;
 use SqlTark\Component\InCondition;
 use SqlTark\Component\LimitClause;
 use SqlTark\Component\OrderClause;
@@ -34,8 +33,7 @@ use SqlTark\Component\GroupCondition;
 use SqlTark\Component\ExistsCondition;
 use SqlTark\Component\BetweenCondition;
 use SqlTark\Component\AbstractCondition;
-use SqlTark\Component\CombineType;
-use SqlTark\Expressions;
+use SqlTark\Compiler\Traits\ExpressionCompiler;
 
 trait SelectQueryCompiler
 {
@@ -86,29 +84,13 @@ trait SelectQueryCompiler
             $result .= $resolvedCte . ' ';
         }
 
-        if(!is_null($offset) && $offset->hasOffset() && empty($orderBy)) {
+        if(empty($orderBy) && ((!is_null($limit) && $limit->hasLimit()) || (!is_null($offset) && $offset->hasOffset()))) {
             $orderByComponent = new OrderClause;
-            $orderByComponent->setColumn(Expressions::column('__order__'));
+            $orderByComponent->setColumn(Expressions::literal(1));
             array_push($orderBy, $orderByComponent);
-
-            if(empty($selects)) {
-                $selectComponent = new ColumnClause;
-                $selectComponent->setColumn(Expressions::column('*'));
-                array_push($selects, $selectComponent);
-            }
-
-            $selectComponent = new ColumnClause;
-            $selectComponent->setColumn(Expressions::literal(0)->as('__order__'));
-            array_push($selects, $selectComponent);
         }
 
-        $result .= $this->compileSelect(
-            $selects,
-            $query->isDistict(),
-            (is_null($offset) || !$offset->hasOffset()) && (is_null($limit) || !$limit->hasLimit())
-                ? $limit
-                : null
-        );
+        $result .= $this->compileSelect($selects, $query->isDistict());
 
         $resolvedFrom = $this->compileFrom($from);
         if($resolvedFrom) {
@@ -158,16 +140,11 @@ trait SelectQueryCompiler
      * @param bool $isDistinct
      * @return string
      */
-    protected function compileSelect(iterable $columns, bool $isDistinct, ?LimitClause $limitClause = null): string
+    protected function compileSelect(iterable $columns, bool $isDistinct): string
     {
         $result = $this->compileColumns($columns, true);
         if (empty($result)) {
             $result = '*';
-        }
-
-        if(!is_null($limitClause) && $limitClause->hasLimit()) {
-            $limit = $limitClause->getLimit();
-            $result = "TOP {$limit} {$result}";
         }
 
         if($isDistinct) {
@@ -461,12 +438,16 @@ trait SelectQueryCompiler
     {
         $resolvedPaging = '';
 
-        if(!is_null($offsetClause) && $offsetClause->hasOffset()) {
+        if(!is_null($offsetClause)) {
             $resolvedPaging .= 'OFFSET ' . $offsetClause->getOffset() . ' ROWS';
+        }
 
-            if(!is_null($limitClause) && $limitClause->hasLimit()) {
-                $resolvedPaging .= ' FETCH NEXT ' . $limitClause->getLimit() . ' ROWS ONLY';
+        if(!is_null($limitClause)) {
+            if(is_null($offsetClause) || !$offsetClause->hasOffset()) {
+                $resolvedPaging .= 'OFFSET 0 ROWS';
             }
+
+            $resolvedPaging .= ' FETCH NEXT ' . $limitClause->getLimit() . ' ROWS ONLY';
         }
 
         return $resolvedPaging;

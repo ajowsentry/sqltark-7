@@ -72,7 +72,7 @@ class DbManager
 
         if($failsafe && false === $connection->connect(false)) {
             foreach($config->getFailoverConnections() as $failoverName) {
-                $xq = $this->connection($failoverName);
+                $xq = $this->connection($failoverName, false);
                 if(false !== $xq->getConnection()->connect(false)) {
                     return $xq;
                 }

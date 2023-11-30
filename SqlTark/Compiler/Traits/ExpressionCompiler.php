@@ -111,6 +111,9 @@ trait ExpressionCompiler
      */
     protected function wrapIdentifier(string $value): string
     {
+        if(!$this->isWrapIdentifier)
+            return $value;
+
         return join('.', array_reduce(preg_split('/\s*\.\s*/', $value, -1, PREG_SPLIT_NO_EMPTY), function($acc, $item) {
             if ($item != '*' && $item[0] != $this->openingIdentifier)
                 $item = $this->openingIdentifier . $item;

@@ -33,7 +33,7 @@ class FromClause extends AbstractFrom
 
     public function getAlias(): string
     {
-        if (!empty($this->alias) && is_string($this->table)) {
+        if (empty($this->alias) && is_string($this->table)) {
             $pair = Helper::extractAlias($this->table);
             return $pair[1] ?? $pair[0];
         }

@@ -406,7 +406,7 @@ trait SelectQueryCompiler
             }
 
             elseif ($column instanceof RandomOrder) {
-                $resolvedColumn = 'RAND()';
+                $resolvedColumn = 'RANDOM()::TEXT';
             }
 
             if (!is_null($resolvedColumn)) {
@@ -429,22 +429,17 @@ trait SelectQueryCompiler
      */
     protected function compilePaging(?LimitClause $limitClause, ?OffsetClause $offsetClause): string
     {
-        if ($limitClause && $limitClause->hasLimit()) {
-            $limit = $this->compileExpression($limitClause->getLimit());
-            
-            if ($offsetClause && $offsetClause->hasOffset()) {
-                $offset = $this->compileExpression($offsetClause->getOffset());
-                return "LIMIT {$offset}, {$limit}";
-            }
+        $result = '';
 
-            return "LIMIT {$limit}";
-        }
-        elseif ($offsetClause && $offsetClause->hasOffset()) {
-            $offset = $this->compileExpression($offsetClause->getOffset());
-            return "LIMIT {$offset}, " . $this->maxValue;
+        if(!is_null($limitClause)) {
+            $result .= " LIMIT " . $limitClause->getLimit();
         }
 
-        return '';
+        if(!is_null($offsetClause)) {
+            $result .= " OFFSET " . $offsetClause->getOffset();
+        }
+
+        return trim($result);
     }
 
     /**

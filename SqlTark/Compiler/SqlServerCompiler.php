@@ -12,8 +12,8 @@ class SqlServerCompiler extends AbstractCompiler
     use Traits\ExpressionCompiler,
         SqlServer\SelectQueryCompiler,
         Traits\InsertQueryCompiler,
-        Traits\UpdateQueryCompiler,
-        Traits\DeleteQueryCompiler;
+        SqlServer\UpdateQueryCompiler,
+        SqlServer\DeleteQueryCompiler;
 
     /**
      * {@inheritdoc}

@@ -429,19 +429,18 @@ trait SelectQueryCompiler
      */
     protected function compilePaging(?LimitClause $limitClause, ?OffsetClause $offsetClause): string
     {
-        if ($limitClause && $limitClause->hasLimit()) {
+        if(!is_null($limitClause) && !is_null($offsetClause)) {
             $limit = $this->compileExpression($limitClause->getLimit());
-            
-            if ($offsetClause && $offsetClause->hasOffset()) {
-                $offset = $this->compileExpression($offsetClause->getOffset());
-                return "LIMIT {$offset}, {$limit}";
-            }
-
+            $offset = $this->compileExpression($offsetClause->getOffset());
+            return "LIMIT {$offset}, {$limit}";
+        }
+        elseif(!is_null($limitClause)) {
+            $limit = $this->compileExpression($limitClause->getLimit());
             return "LIMIT {$limit}";
         }
-        elseif ($offsetClause && $offsetClause->hasOffset()) {
+        elseif(!is_null($offsetClause)) {
             $offset = $this->compileExpression($offsetClause->getOffset());
-            return "LIMIT {$offset}, " . $this->maxValue;
+            return "LIMIT {$offset}, {$this->maxValue}";
         }
 
         return '';

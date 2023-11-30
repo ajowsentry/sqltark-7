@@ -6,9 +6,6 @@ namespace SqlTark\Compiler;
 
 use SqlTark\Query;
 use DateTimeInterface;
-use SqlTark\Component\AbstractFrom;
-use SqlTark\Component\FromClause;
-use SqlTark\Component\RawFrom;
 use SqlTark\Expressions\Raw;
 use SqlTark\Query\MethodType;
 use SqlTark\Utilities\Helper;
@@ -58,6 +55,11 @@ abstract class AbstractCompiler
      * @var string $maxValue
      */
     protected $maxValue = '18446744073709551615';
+
+    /**
+     * @var bool $isWrapIdentifier
+     */
+    public $isWrapIdentifier = true;
 
     /**
      * @param AbstractExpression|Query $expression
