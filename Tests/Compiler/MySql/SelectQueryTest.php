@@ -1,12 +1,14 @@
 <?php
-
 declare(strict_types=1);
+
+namespace Tests\Compiler\MySql;
 
 use SqlTark\Query;
 use SqlTark\Expressions;
 use PHPUnit\Framework\TestCase;
 use SqlTark\Compiler\MySqlCompiler;
 use SqlTark\Component\ComponentType;
+use DateTime;
 
 final class SelectQueryTest extends TestCase
 {
@@ -188,9 +190,7 @@ final class SelectQueryTest extends TestCase
         $query->limit('123');
         $this->assertEquals($output, $query->compile());
 
-        // $query->clearComponents(ComponentType::Limit);
-        // $query->clearComponents(ComponentType::Offset);
-        $query->limit(0)->offset(0);
+        $query->limit(null)->offset(null);
 
         $output = substr($output, 0, -15);
         $output .= " LIMIT 222";

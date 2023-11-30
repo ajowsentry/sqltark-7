@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__. '/../vendor/autoload.php';
+namespace Tests\Compiler\MySql;
 
 use SqlTark\Query;
 use SqlTark\Expressions;
 use PHPUnit\Framework\TestCase;
 use SqlTark\Compiler\MySqlCompiler;
+
 
 final class DeleteQueryTest extends TestCase
 {

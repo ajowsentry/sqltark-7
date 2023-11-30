@@ -1,16 +1,17 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__. '/../vendor/autoload.php';
+namespace Tests\Compiler\MySql;
 
 use SqlTark\Query;
 use SqlTark\Expressions;
 use PHPUnit\Framework\TestCase;
 use SqlTark\Compiler\MySqlCompiler;
+use DateTime;
 
-final class UpdateQueryTest extends TestCase
+final class InsertQueryTest extends TestCase
 {
-    public function testUpdateQuery()
+    public function testInsertQuery()
     {
         $query = new Query;
         $query->setCompiler(new MySqlCompiler);
@@ -25,17 +26,19 @@ final class UpdateQueryTest extends TestCase
             'g' => true,
             'h' => null,
         ];
+        $valuesString = "(1, 2.2, 'string', '2023-01-02 14:15:16', ?, :var, TRUE, NULL)";
 
-        $output = "UPDATE `t1` SET `a` = 1, `b` = 2.2, `c` = 'string', `d` = '2023-01-02 14:15:16', `e` = ?, `f` = :var, `g` = TRUE, `h` = NULL";
-        $query->from('t1')->asUpdate($values);
+        $query->from('t1')->asInsert($values);
+
+        $output = "INSERT INTO `t1` (`a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`) VALUES {$valuesString}";
+        $this->assertEquals($output, $query->compile());
+        
+        $query->clearComponents();
+
+        $query->from('t1')->asBulkInsert(array_keys($values), array_fill(0, 5, $values));
+        
+        $output = "INSERT INTO `t1` (`a`, `b`, `c`, `d`, `e`, `f`, `g`, `h`) VALUES " . join(', ', array_fill(0, 5, $valuesString));
         $this->assertEquals($output, $query->compile());
 
-        $output .= " WHERE 1 = 1";
-        $query->equals(1, 1);
-        $this->assertEquals($output, $query->compile());
-
-        $output .= " LIMIT 1";
-        $query->limit(1);
-        $this->assertEquals($output, $query->compile());
     }
 }
