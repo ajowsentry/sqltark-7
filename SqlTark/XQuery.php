@@ -108,6 +108,7 @@ class XQuery extends Query
             case 'int'     : return PDO::PARAM_INT;
             case 'integer' : return PDO::PARAM_INT;
             case 'null'    : return PDO::PARAM_NULL;
+            case 'NULL'    : return PDO::PARAM_NULL;
         };
 
         return PDO::PARAM_STR;

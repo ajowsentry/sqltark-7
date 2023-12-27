@@ -62,7 +62,7 @@ abstract class AbstractCompiler
     public $isWrapIdentifier = true;
 
     /**
-     * @param AbstractExpression|Query $expression
+     * @param AbstractExpression|Query|null|scalar $expression
      * @return string
      */
     public function compileExpression($expression, bool $withAlias = true): string

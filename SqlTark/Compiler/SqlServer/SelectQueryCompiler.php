@@ -438,16 +438,15 @@ trait SelectQueryCompiler
     {
         $resolvedPaging = '';
 
-        if(!is_null($offsetClause)) {
-            $resolvedPaging .= 'OFFSET ' . $offsetClause->getOffset() . ' ROWS';
+        if(!is_null($offsetClause) && !is_null($limitClause)) {
+            return 'OFFSET ' . $offsetClause->getOffset() . ' ROWS '
+                . 'FETCH NEXT ' . $limitClause->getLimit() . ' ROWS ONLY';
         }
-
-        if(!is_null($limitClause)) {
-            if(is_null($offsetClause) || !$offsetClause->hasOffset()) {
-                $resolvedPaging .= 'OFFSET 0 ROWS';
-            }
-
-            $resolvedPaging .= ' FETCH NEXT ' . $limitClause->getLimit() . ' ROWS ONLY';
+        elseif(!is_null($offsetClause)) {
+            return 'OFFSET ' . $offsetClause->getOffset() . ' ROWS';
+        }
+        elseif(!is_null($limitClause)) {
+            return 'OFFSET 0 ROWS FETCH NEXT ' . $limitClause->getLimit() . ' ROWS ONLY';
         }
 
         return $resolvedPaging;

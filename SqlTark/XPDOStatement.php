@@ -13,38 +13,58 @@ final class XPDOStatement extends PDOStatement
     /**
      * @template T of object
      * @param class-string<T> $className
+     * @param null|(callable(array<string,scalar|null>):T) $objectCreator
      * @return null|T
      */
-    public function fetchClass(string $className): ?object
+    public function fetchClass(string $className, $objectCreator = null): ?object
     {
         $row = parent::fetch(PDO::FETCH_ASSOC);
-        return false === $row ? null : new $className($row);
+        if(false === $row || is_null($row))
+            return null;
+        
+        if(is_null($objectCreator)) {
+            return new $className($row);
+        }
+
+        return $objectCreator($row);
     }
 
     /**
      * @template T of object
      * @param class-string<T> $className
+     * @param null|(callable(array<string,scalar|null>):T) $objectCreator
      * @return list<T>
      */
-    public function fetchClassAll(string $className): array
+    public function fetchClassAll(string $className, $objectCreator = null): array
     {
-        return iterator_to_array($this->fetchClassIterate($className), false);
+        return iterator_to_array($this->fetchClassIterate($className, $objectCreator), false);
     }
 
     /**
      * @template T of object
      * @param class-string<T> $className
+     * @param null|(callable(array<string,scalar|null>):T) $objectCreator
      * @return Generator<int,T,null,void>
      */
-    public function fetchClassIterate(string $className): Generator
+    public function fetchClassIterate(string $className, $objectCreator = null): Generator
     {
-        while(false !== ($row = parent::fetch(PDO::FETCH_ASSOC))) {
-            yield new $className($row);
+        if(is_null($objectCreator)) {
+            while(false !== ($row = parent::fetch(PDO::FETCH_ASSOC))) {
+                yield new $className($row);
+            }
+        }
+        else {
+            while(false !== ($row = parent::fetch(PDO::FETCH_ASSOC))) {
+                yield $objectCreator($row);
+            }
         }
     }
 
     /**
      * Same as XPDOStatement::fetch, except it returns null on error instead of false
+     * @param int|null $mode
+     * @param int|null $cursorOrientation
+     * @param int|null $cursorOffset
      * @return mixed
      */
     public function fetchOne($mode = PDO::FETCH_BOTH, $cursorOrientation = PDO::FETCH_ORI_NEXT, $cursorOffset = 0)

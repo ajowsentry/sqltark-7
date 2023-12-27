@@ -6,6 +6,7 @@ namespace SqlTark\Compiler\Traits;
 
 use SqlTark\Query;
 use InvalidArgumentException;
+use SqlTark\Component\AbstractFrom;
 use SqlTark\Component\InsertClause;
 use SqlTark\Component\ComponentType;
 use SqlTark\Component\InsertQueryClause;
@@ -26,6 +27,7 @@ trait InsertQueryCompiler
             );
         }
 
+        /** @var AbstractFrom */
         $fromComponent = $query->getOneComponent(ComponentType::From);
         $resolvedTable  = $this->compileFrom($fromComponent);
         if(empty($resolvedTable)) {
