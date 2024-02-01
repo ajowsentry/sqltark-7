@@ -155,6 +155,7 @@ class DbManager
             /** @var AbstractCompiler */
             $compiler = new $driver;
             $compiler->isWrapIdentifier = $config->isWrapIdentifier();
+            return $compiler;
         }
 
         throw new RuntimeException("Could not resolve compiler for '{$driver}' driver.");
