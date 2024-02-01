@@ -21,6 +21,11 @@ class Config extends ConnectionConfig
     private $compiler;
 
     /**
+     * @var bool $wrapIdentifier
+     */
+    private $wrapIdentifier = true;
+
+    /**
      * @var list<string> $failoverConnections
      */
     private $failoverConnections = [];
@@ -32,20 +37,24 @@ class Config extends ConnectionConfig
     {
         parent::__construct($config);
 
-        if(!empty($config['driver'])) {
+        if(isset($config['driver'])) {
             $this->connection = $config['driver'];
             $this->compiler = $config['driver'];
         }
 
-        if (!empty($config['connection'])) {
+        if (isset($config['connection'])) {
             $this->connection = $config['connection'];
         }
 
-        if (!empty($config['compiler'])) {
+        if (isset($config['compiler'])) {
             $this->compiler = $config['compiler'];
         }
 
-        if (!empty($config['failover'])) {
+        if (isset($config['wrap_identifier'])) {
+            $this->wrapIdentifier = $config['wrap_identifier'];
+        }
+
+        if (isset($config['failover'])) {
             $this->failoverConnections = array_unique($config['failover']);
         }
     }
@@ -64,6 +73,14 @@ class Config extends ConnectionConfig
     public function getCompiler(): string
     {
         return $this->compiler;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWrapIdentifier(): bool
+    {
+        return $this->wrapIdentifier;
     }
 
     /**
@@ -98,5 +115,14 @@ class Config extends ConnectionConfig
     public function setFailoverConnections(array $value): void
     {
         $this->failoverConnections = $value;
+    }
+
+    /**
+     * @param bool $value
+     * @return void
+     */
+    public function setWrapIdentifier($value): void
+    {
+        $this->wrapIdentifier = $value;
     }
 }

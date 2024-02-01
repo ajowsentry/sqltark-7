@@ -316,4 +316,32 @@ final class SelectQueryTest extends TestCase
         $query->select($subQuery->alias('xxx'));
         $this->assertEquals($output, $query->compile());
     }
+
+    public function testSelectQuery_test1()
+    {
+        $query = new Query;
+        $query->setCompiler(new SqlServerCompiler);
+
+        $query->from('ogss.ppob_transaction as t')
+            ->join('ogss.ppob_transaction_bills as b', 'b.id_transaction', '=', 't.id')
+            ->equals('id_partner', '1')
+            ->between('paydate', '2023-12-19 00:00:00', '2023-12-26 00:00:00')
+            ->select(
+                't.transaction_code',
+                't.customer_name',
+                't.customer_number',
+                't.customer_tariff',
+                't.paydate',
+                'b.amount',
+                'b.period',
+                'b.first_meter',
+                'b.last_meter',
+                'b.description',
+            )
+            ->limit(100)
+            ->offset(0);
+
+        $output = "SELECT [t].[transaction_code], [t].[customer_name], [t].[customer_number], [t].[customer_tariff], [t].[paydate], [b].[amount], [b].[period], [b].[first_meter], [b].[last_meter], [b].[description] FROM [ogss].[ppob_transaction] AS [t] JOIN [ogss].[ppob_transaction_bills] AS [b] ON [b].[id_transaction] = [t].[id] WHERE [id_partner] = '1' AND [paydate] BETWEEN '2023-12-19 00:00:00' AND '2023-12-26 00:00:00' ORDER BY 1 ASC OFFSET 0 ROWS FETCH NEXT 100 ROWS ONLY";
+        $this->assertEquals($output, $query->compile());
+    }
 }

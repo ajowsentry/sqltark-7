@@ -10,6 +10,7 @@ use SqlTark\Compiler\MySqlCompiler;
 use SqlTark\Compiler\AbstractCompiler;
 use SqlTark\Compiler\PostgresCompiler;
 use SqlTark\Compiler\SqlServerCompiler;
+use SqlTark\Compiler\SqlServerLegacyCompiler;
 use SqlTark\Connection\MySqlConnection;
 use SqlTark\Connection\AbstractConnection;
 use SqlTark\Connection\DbLibConnection;
@@ -133,21 +134,27 @@ class DbManager
         $driver = $config->getCompiler();
         switch($driver) {
             case 'mysql':
-            case MySqlCompiler::class:
-            return new MySqlCompiler;
+            $driver = MySqlCompiler::class;
+            break;
 
             case 'sqlsrv':
             case 'dblib':
-            case SqlServerCompiler::class:
-            return new SqlServerCompiler;
+            $driver = SqlServerCompiler::class;
+            break;
+
+            case 'sqlsrv_legacy':
+            $driver = SqlServerLegacyCompiler::class;
+            break;
 
             case 'pgsql':
-            case PostgresCompiler::class:
-            return new PostgresCompiler;
+            $driver = PostgresCompiler::class;
+            break;
         }
 
         if(class_exists($driver) && is_subclass_of($driver, AbstractCompiler::class)) {
-            return new $driver;
+            /** @var AbstractCompiler */
+            $compiler = new $driver;
+            $compiler->isWrapIdentifier = $config->isWrapIdentifier();
         }
 
         throw new RuntimeException("Could not resolve compiler for '{$driver}' driver.");

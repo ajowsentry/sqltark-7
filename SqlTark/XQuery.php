@@ -6,6 +6,7 @@ namespace SqlTark;
 
 use PDO;
 use PDOException;
+use PDOStatement;
 use SqlTark\Query;
 use DateTimeInterface;
 use SqlTark\XPDOStatement;
@@ -58,10 +59,10 @@ class XQuery extends Query
     }
 
     /**
-     * @param (callable(string,?array<mixed>,?XPDOStatement):void) $onExecuteCallback
+     * @param (callable(string,?array<mixed>,?XPDOStatement):void)|null $onExecuteCallback
      * @return static Self object
      */
-    public function onExecute(callable $onExecuteCallback)
+    public function onExecute(?callable $onExecuteCallback)
     {
         $this->onExecuteCallback = $onExecuteCallback;
         return $this;
@@ -141,7 +142,7 @@ class XQuery extends Query
             $pdo = $this->connection->getPDO();
 
             $statement = $pdo->prepare($sql);
-            if(false === $statement) {
+            if(!($statement instanceof PDOStatement)) {
                 [$sqlState, $errorCode, $errorMessage] = $pdo->errorInfo();
                 throw new PDOException("SQLSTATE[{$sqlState}]: (Code {$errorCode}) {$errorMessage}");
             }
